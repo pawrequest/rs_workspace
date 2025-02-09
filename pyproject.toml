@@ -1,0 +1,16 @@
+[project]
+name = "rs_workspace"
+version = "0.0.1"
+
+dependencies = [
+]
+requires-python = ">= 3.8"
+
+[project.optional-dependencies]
+dev = [
+    'pytest',
+    'pytest-asyncio',
+]
+
+[project.scripts]
+rs_init = "rs_workspace.setup_workspace:redscript_init"
