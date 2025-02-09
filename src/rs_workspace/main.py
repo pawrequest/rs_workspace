@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from rs_workspace import setup_workspace
-from rs_workspace.project_manager import install_mod, install_mod_from_config_json, make_config
+from rs_workspace import workspace
+from rs_workspace.project import install_mod, install_mod_from_config_json, make_config
 
 if __name__ == '__main__':
     setup_workspace.rs_init()

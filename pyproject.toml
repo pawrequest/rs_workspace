@@ -14,4 +14,4 @@ dev = [
 
 [project.scripts]
 rs_init = "rs_workspace:rs_init"
-rs_init_install = "rs_workspace:init_install"
+rs_init_install = "rs_workspace:rs_init_install"

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from rs_workspace.project_manager import game_dir_from_env, load_json
+from rs_workspace.project import game_dir_from_env, load_json
 
 
 def make_links(source: Path, tgt: Path, exclude: set = None):

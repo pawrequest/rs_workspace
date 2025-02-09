@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from rs_workspace.project_manager import get_deps_dir, make_redscript_path_txt, load_json
+from rs_workspace.project import get_deps_dir, make_redscript_path_txt, load_json
 from rs_workspace.link_deps import (
     install_deps_symlinks,
 )
@@ -47,11 +47,11 @@ def rs_init():
 
 
 def main():
-    args = parseargs()
+    # args = parseargs()
     rs_init(
-        game_dir=Path(args.game_dir),
-        deps_dir=Path(args.deps_dir),
-        overwrite=args.overwrite,
+        # game_dir=Path(args.game_dir),
+        # deps_dir=Path(args.deps_dir),
+        # overwrite=args.overwrite,
     )
 
 if __name__ == '__main__':
