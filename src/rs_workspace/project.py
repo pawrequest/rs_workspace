@@ -6,7 +6,7 @@ from pathlib import Path
 
 def red_install(cwd: Path):
     """Run red install in the cwd"""
-    subprocess.run('red install', shell=True, cwd=str(cwd))
+    subprocess.run('red install', cwd=str(cwd))
 
 def install_mod(config:dict):
     cwd_path = Path(config['stage'])
