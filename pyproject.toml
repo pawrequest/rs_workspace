@@ -13,4 +13,5 @@ dev = [
 ]
 
 [project.scripts]
-rs_init = "rs_workspace.setup_workspace:redscript_init"
+rs_init = "rs_workspace:rs_init"
+rs_init_install = "rs_workspace:init_install"
