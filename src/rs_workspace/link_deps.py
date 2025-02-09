@@ -39,18 +39,18 @@ def install_deps_symlinks(deps_dir:Path, game_dir: Path = None, exclude: set = N
 
 
 
-def install_deps(config:dict, exclude: set = None):
-    """Install symlinks to the game directory for r6 and r4ext"""
-    exclude = exclude or set()
-    game_dir = Path(config['game'])
-
-    r6_dir = game_dir / 'r6' / 'scripts'
-    r4ext_dir = game_dir / 'red4ext' / 'plugins'
-    r6_out = deps_dir / 'r6'
-    r4ext_out = deps_dir / 'r4ext'
-
-    make_links(r6_dir, r6_out, exclude=exclude)
-    make_links(r4ext_dir, r4ext_out, exclude=exclude)
+# def install_deps(config:dict, exclude: set = None):
+#     """Install symlinks to the game directory for r6 and r4ext"""
+#     exclude = exclude or set()
+#     game_dir = Path(config['game'])
+#
+#     r6_dir = game_dir / 'r6' / 'scripts'
+#     r4ext_dir = game_dir / 'red4ext' / 'plugins'
+#     r6_out = deps_dir / 'r6'
+#     r4ext_out = deps_dir / 'r4ext'
+#
+#     make_links(r6_dir, r6_out, exclude=exclude)
+#     make_links(r4ext_dir, r4ext_out, exclude=exclude)
 
 
 def install_deps_symlinks_from_red_config_json(config_json):
