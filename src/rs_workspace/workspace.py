@@ -55,11 +55,3 @@ if __name__ == '__main__':
     main()
 
 
-def get_pyproject_root():
-    project_root = Path.cwd().resolve().parent
-    while (
-        not (project_root / 'pyproject.toml').exists()
-        and project_root.parent != project_root
-    ):
-        project_root = project_root.parent
-    return project_root
