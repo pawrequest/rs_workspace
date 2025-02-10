@@ -23,10 +23,9 @@ def install_mod_from_config_json(json_config = 'red.config.json'):
     compile_to_game_dir()
 
 
-def compile_to_game_dir(game_dir: Path = None):
+def compile_to_game_dir(game_dir: Path = GAME_DIR):
     """Compile redscript files in the game_dir"""
     # cwd = cwd or get_pyproject_root()
-    game_dir = game_dir or GAME_DIR
     scc = game_dir / COMPILER
     rs_scripts_dir = game_dir / R6_SCRIPTS
     r4ext_paths_file = game_dir / R4EXT_PLUGINS_REDSCRIPT_PATHS
@@ -41,9 +40,8 @@ def compile_to_game_dir(game_dir: Path = None):
     # subprocess.run(args, cwd=cwd)
 
 
-def make_redscript_path_txt(game_dir: Path = None, overwrite=False):
+def make_redscript_path_txt(game_dir: Path = GAME_DIR, overwrite=False):
     """Make a redscript_paths.txt file in the red4ext/plugins directory - pass game_dir, or use CYBERPUNK_GAME_DIR env var"""
-    game_dir = Path(game_dir or GAME_DIR)
     r4ext_plugins_dir = game_dir / R4EXT_PLUGINS
     pathfile = game_dir / R4EXT_PLUGINS_REDSCRIPT_PATHS
 
@@ -69,15 +67,15 @@ def make_config(
     name: str,
     src: Path,
     version: str,
-    game_dir: Path = None,
+    game_dir: Path = GAME_DIR,
+    build_dir: Path = BUILD_DIR,
 ) -> dict:
-    game_dir = game_dir or GAME_DIR
     return {
         'name': name,
         'version': version,
         'game': str(game_dir),
         'license': True,
-        'stage': str(BUILD_DIR / name),
+        'stage': str(build_dir / name),
         'scripts': {
             'redscript': {
                 'debounceTime': 3000,
@@ -91,10 +89,9 @@ def make_config(
 def make_config_json(config) -> Path:
     mod_build_dir = Path(config['stage'])
     mod_build_dir.mkdir(parents=True, exist_ok=True)
-    print(f'Created {mod_build_dir}')
 
     config_json = mod_build_dir / 'red_config.json'
     with open(str(config_json), 'w') as f:
         json.dump(config, f, indent=4)
-    print(f'Created {config_json}')
+    print(f'Created {config=} at {config_json}')
     return config_json
