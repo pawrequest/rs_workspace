@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from rs_workspace.project import game_dir_from_env, load_json
+from rs_workspace.paths import GAME_DIR, R4EXT, R4EXT_PLUGINS, R6, R6_SCRIPTS
 
 
 def make_links(source: Path, tgt: Path, exclude: set = None):
@@ -20,29 +20,26 @@ def make_links(source: Path, tgt: Path, exclude: set = None):
                 )
                 print(f'Linked {plugin_name} to {plugin_dir}')
             except FileExistsError:
-                print(f'Link {plugin_name} already exists')
+                print(f'Link {plugin_dir} already exists')
 
 
-def install_deps_symlinks(deps_dir:Path, game_dir: Path = None, exclude: set = None):
+def install_deps_symlinks(deps_dir: Path, game_dir: Path = None, exclude: set = None):
     """Install symlinks to the game directory for r6 and r4ext"""
-    game_dir = game_dir or game_dir_from_env()
-    game_dir = Path(game_dir)
+    game_dir = game_dir or GAME_DIR
     exclude = exclude or set()
 
-    r6_dir = game_dir / 'r6' / 'scripts'
-    r4ext_dir = game_dir / 'red4ext' / 'plugins'
-    r6_out = deps_dir / 'r6'
-    r4ext_out = deps_dir / 'r4ext'
-
-    make_links(r6_dir, r6_out, exclude=exclude)
-    make_links(r4ext_dir, r4ext_out, exclude=exclude)
+    make_links(game_dir / R6_SCRIPTS, deps_dir / R6, exclude=exclude)
+    make_links(game_dir / R4EXT_PLUGINS, deps_dir / R4EXT, exclude=exclude)
 
 
+#####
 
-# def install_deps(config:dict, exclude: set = None):
+
+# def install_deps_symlinks1(deps_dir: Path, game_dir: Path = None, exclude: set = None):
 #     """Install symlinks to the game directory for r6 and r4ext"""
+#     game_dir = game_dir or game_dir_from_env()
+#     game_dir = Path(game_dir)
 #     exclude = exclude or set()
-#     game_dir = Path(config['game'])
 #
 #     r6_dir = game_dir / 'r6' / 'scripts'
 #     r4ext_dir = game_dir / 'red4ext' / 'plugins'
@@ -51,11 +48,3 @@ def install_deps_symlinks(deps_dir:Path, game_dir: Path = None, exclude: set = N
 #
 #     make_links(r6_dir, r6_out, exclude=exclude)
 #     make_links(r4ext_dir, r4ext_out, exclude=exclude)
-
-
-def install_deps_symlinks_from_red_config_json(config_json):
-    config = load_json(config_json)
-    project_name = config['name']
-    game_dir = Path(config['game'])
-    deps_dir = Path(config['deps'])
-    return install_deps_symlinks(game_dir, deps_dir, exclude={project_name})

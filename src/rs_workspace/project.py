@@ -1,46 +1,35 @@
 import json
-import os
 import subprocess
 from pathlib import Path
+
+from rs_workspace.paths import (
+    BUILD_DIR,
+    COMPILER,
+    GAME_DIR,
+    R4EXT_PLUGINS,
+    R4EXT_PLUGINS_REDSCRIPT_PATHS,
+    R6_SCRIPTS,
+)
 
 
 def red_install(cwd: Path):
     """Run red install in the cwd"""
     subprocess.run('red install', cwd=str(cwd))
 
-def install_mod(config:dict):
-    cwd_path = Path(config['stage'])
-    cwd_path.mkdir(parents=True, exist_ok=True)
-    red_install(cwd=cwd_path)
-    # compile_to_game_dir()
 
-
-def install_mod_from_config_json1(config_json:Path):
-
-    # config = make_config(name=name, src=Path(src), version=version)
-    config = load_json(config_json)
-    # make_config_json(config)
-    red_install(config_json.parent)
+def install_mod_from_config_json(json_config = 'red.config.json'):
+    config = load_json(Path(json_config))
+    red_install(Path(json_config).parent)
     compile_to_game_dir()
-
-
-def install_mod_from_config_json():
-    json_path = Path('red.config.json')
-    # config = make_config(name=name, src=Path(src), version=version)
-    config = load_json(json_path)
-    # make_config_json(config)
-    red_install(json_path.parent)
-    compile_to_game_dir()
-
 
 
 def compile_to_game_dir(game_dir: Path = None):
     """Compile redscript files in the game_dir"""
     # cwd = cwd or get_pyproject_root()
-    game_dir = game_dir or Path(game_dir_from_env())
-    scc = game_dir / 'engine/tools/scc.exe'
-    rs_scripts_dir = game_dir / 'r6/scripts/'
-    r4ext_paths_file = game_dir / 'red4ext/redscript_paths.txt'
+    game_dir = game_dir or GAME_DIR
+    scc = game_dir / COMPILER
+    rs_scripts_dir = game_dir / R6_SCRIPTS
+    r4ext_paths_file = game_dir / R4EXT_PLUGINS_REDSCRIPT_PATHS
     args = [
         str(scc),
         '-compile',
@@ -52,12 +41,12 @@ def compile_to_game_dir(game_dir: Path = None):
     # subprocess.run(args, cwd=cwd)
 
 
-def make_redscript_path_txt(game_dir: Path = None, overwrite=True):
+def make_redscript_path_txt(game_dir: Path = None, overwrite=False):
     """Make a redscript_paths.txt file in the red4ext/plugins directory - pass game_dir, or use CYBERPUNK_GAME_DIR env var"""
-    game_dir = game_dir or game_dir_from_env()
-    game_dir = Path(game_dir)
-    r4ext_plugins_dir = game_dir / 'red4ext/plugins/'
-    pathfile = r4ext_plugins_dir / 'redscript_paths.txt'
+    game_dir = Path(game_dir or GAME_DIR)
+    r4ext_plugins_dir = game_dir / R4EXT_PLUGINS
+    pathfile = game_dir / R4EXT_PLUGINS_REDSCRIPT_PATHS
+
     if pathfile.exists() and not overwrite:
         print(
             f'File {pathfile} already exists. If you want to overwrite it, call the function with overwrite=True'
@@ -70,51 +59,7 @@ def make_redscript_path_txt(game_dir: Path = None, overwrite=True):
             f.write(f'{plugin.resolve()}\n')
 
 
-def get_deps_dir():
-    project_root = get_pyproject_root()
-    rsrc = project_root / 'rsrc'
-    print(f'Project Root: {project_root.name}, Dependencies Directory: {rsrc}')
-    return rsrc
-
-
-def get_pyproject_root():
-    project_root = Path.cwd().resolve().parent
-    while (
-        not (project_root / 'pyproject.toml').exists()
-        and project_root.parent != project_root
-    ):
-        project_root = project_root.parent
-    return project_root
-
-
-def get_build_dir() -> Path:
-    project_root = get_pyproject_root()
-    build_dir = project_root / 'build'
-    print(f'Project Root: {project_root.name}, Build Directory: {build_dir}')
-    return build_dir
-
-
-def get_stage(name: str) -> Path:
-    build_dir = get_build_dir() / name
-    print(f'Build Directory: {build_dir}')
-    return build_dir
-
-
-def game_dir_from_env_path():
-    game_dir = os.getenv('CYBERPUNK_GAME_DIR')
-    if not game_dir:
-        raise ValueError('game_dir not provided and CYBERPUNK_GAME_DIR not set')
-    return Path(game_dir)
-
-
-def game_dir_from_env():
-    game_dir = os.getenv('CYBERPUNK_GAME_DIR')
-    if not game_dir:
-        raise ValueError('game_dir not provided and CYBERPUNK_GAME_DIR not set')
-    return game_dir
-
-
-def load_json(config_json:Path) -> dict:
+def load_json(config_json: Path) -> dict:
     with open(str(config_json), 'r') as f:
         config = json.load(f)
     return config
@@ -126,13 +71,13 @@ def make_config(
     version: str,
     game_dir: Path = None,
 ) -> dict:
-    game_dir = game_dir or game_dir_from_env()
+    game_dir = game_dir or GAME_DIR
     return {
         'name': name,
         'version': version,
         'game': str(game_dir),
         'license': True,
-        'stage': str(get_stage(name)),
+        'stage': str(BUILD_DIR / name),
         'scripts': {
             'redscript': {
                 'debounceTime': 3000,

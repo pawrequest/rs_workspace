@@ -14,5 +14,10 @@ dev = [
 
 [project.scripts]
 rs_init = "rs_workspace:rs_init"
+rs_install = "rs_workspace:install_mod_from_config_json"
+rs_install_launch = "rs_workspace:rs_install_launch"
 rs_init_install = "rs_workspace:rs_init_install"
-rs_install = "rs_workspace.project:install_mod_from_config_json"
+rs_init_install_launch = "rs_workspace:rs_init_install_launch"
+
+[tool.hatch.metadata]
+allow-direct-references = true

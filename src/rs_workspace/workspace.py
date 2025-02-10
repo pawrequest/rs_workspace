@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 
-from rs_workspace.project import get_deps_dir, make_redscript_path_txt, load_json
+from rs_workspace.project import load_json, make_redscript_path_txt
+from rs_workspace.paths import DEPS_DIR
 from rs_workspace.link_deps import (
     install_deps_symlinks,
 )
@@ -26,24 +27,19 @@ def parseargs():
         '--deps-dir',
         help='Dependencies directory, defaults=pyproject as root / rsrc',
         nargs='?',
-        default=get_deps_dir(),
+        default=DEPS_DIR,
     )
     return parser.parse_args()
 
 
-# def rs_init1(deps_dir: Path, game_dir: Path=None, overwrite: bool = False):
-#     install_deps_symlinks(deps_dir, game_dir=game_dir)
-#     make_redscript_path_txt(game_dir=game_dir, overwrite=overwrite)
-
-
-def rs_init():
-    json_path = Path('red.config.json')
+def rs_init(config_json='red.config.json', dependencies_links=r'deps/'):
+    json_path = Path(config_json)
     config = load_json(json_path)
     name = config['name']
-    deps_dir = Path(r'deps/').resolve()
+    deps_dir = Path(dependencies_links).resolve()
 
     install_deps_symlinks(deps_dir, exclude={name})
-    make_redscript_path_txt()
+    make_redscript_path_txt(overwrite=True)
 
 
 def main():
@@ -54,5 +50,16 @@ def main():
         # overwrite=args.overwrite,
     )
 
+
 if __name__ == '__main__':
     main()
+
+
+def get_pyproject_root():
+    project_root = Path.cwd().resolve().parent
+    while (
+        not (project_root / 'pyproject.toml').exists()
+        and project_root.parent != project_root
+    ):
+        project_root = project_root.parent
+    return project_root
