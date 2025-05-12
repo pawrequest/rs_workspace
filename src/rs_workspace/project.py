@@ -17,9 +17,13 @@ def red_install(cwd: Path):
     subprocess.run('red install', cwd=str(cwd))
 
 
-def install_mod_from_config_json(json_config = 'red.config.json'):
-    config = load_json(Path(json_config))
-    red_install(Path(json_config).parent)
+def install_mod_from_config_json(json_config = None):
+    json_config = json_config or 'red.config.json'
+    print(f'Installing mod from {json_config}')
+    json_path = Path(json_config).resolve()
+    config = load_json(json_path)
+
+    red_install(json_path.parent)
     compile_to_game_dir()
 
 
@@ -90,7 +94,7 @@ def make_config_json(config) -> Path:
     mod_build_dir = Path(config['stage'])
     mod_build_dir.mkdir(parents=True, exist_ok=True)
 
-    config_json = mod_build_dir / 'red_config.json'
+    config_json = mod_build_dir / 'red.config.json'
     with open(str(config_json), 'w') as f:
         json.dump(config, f, indent=4)
     print(f'Created {config=} at {config_json}')

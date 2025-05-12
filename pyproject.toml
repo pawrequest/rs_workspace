@@ -3,8 +3,9 @@ name = "rs_workspace"
 version = "0.0.1"
 
 dependencies = [
+    'long-temporary @ D:/prdev/tools/long_temporary'
 ]
-requires-python = ">= 3.8"
+requires-python = ">= 3.13"
 
 [project.optional-dependencies]
 dev = [
@@ -16,8 +17,10 @@ dev = [
 rs_init = "rs_workspace:rs_init"
 rs_install = "rs_workspace:install_mod_from_config_json"
 rs_install_launch = "rs_workspace:rs_install_launch"
+rs_launch = "rs_workspace:rs_launch"
 rs_init_install = "rs_workspace:rs_init_install"
 rs_init_install_launch = "rs_workspace:rs_init_install_launch"
+rs_add_utils = "rs_workspace:add_utils"
 
 [tool.hatch.metadata]
 allow-direct-references = true

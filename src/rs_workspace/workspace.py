@@ -1,8 +1,7 @@
-import os
 from pathlib import Path
 
 from rs_workspace.project import load_json, make_redscript_path_txt
-from rs_workspace.paths import DEPS_DIR
+from rs_workspace.paths import DEPS_DIR, GAME_DIR
 from rs_workspace.link_deps import (
     install_deps_symlinks,
 )
@@ -21,11 +20,11 @@ def parseargs():
         '--game-dir',
         help='Game directory',
         nargs='?',
-        default=Path(os.getenv('CYBERPUNK_GAME_DIR')),
+        default=GAME_DIR,
     )
     parser.add_argument(
         '--deps-dir',
-        help='Dependencies directory, defaults=pyproject as root / rsrc',
+        help='Dependencies directory',
         nargs='?',
         default=DEPS_DIR,
     )
