@@ -42,13 +42,13 @@ def rs_init_install(config_path:str = None):
 
 
 def rs_launch():
-    if not ctypes.windll.shell32.IsUserAnAdmin():
-        # Run the game executable with admin rights
-        args = ['-skipStartScreen', '--launcher-skip']
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", str(GAME_EXE), ' '.join(args), None, 1)
-    else:
+    # if not ctypes.windll.shell32.IsUserAnAdmin():
+    #     # Run the game executable with admin rights
+    #     args = ['-skipStartScreen', '--launcher-skip']
+    #     ctypes.windll.shell32.ShellExecuteW(None, "runas", str(GAME_EXE), ' '.join(args), None, 1)
+    # else:
         # Run the game directly
-        subprocess.run([GAME_EXE])
+    subprocess.run([GAME_EXE])
 
 # def launch():
 #     if not ctypes.windll.shell32.IsUserAnAdmin():
