@@ -1,5 +1,6 @@
 import json
 import subprocess
+from os import mkdir
 from pathlib import Path
 
 from rs_workspace.paths import (
@@ -10,7 +11,7 @@ from rs_workspace.paths import (
     R4EXT_PLUGINS_REDSCRIPT_PATHS,
     R6_SCRIPTS,
 )
-
+import shutil
 
 def red_install(cwd: Path):
     """Run red install in the cwd"""
@@ -22,7 +23,9 @@ def install_mod_from_config_json(json_config = None):
     print(f'Installing mod from {json_config}')
     json_path = Path(json_config).resolve()
     config = load_json(json_path)
-
+    src=json_path.parent / config['scripts']['redscript']['src']
+    storages = src.parent / 'storages'
+    copy_storages(storages=storages, name=config['name'], game_dir=Path(config['game']))
     red_install(json_path.parent)
     compile_to_game_dir()
 
@@ -99,3 +102,12 @@ def make_config_json(config) -> Path:
         json.dump(config, f, indent=4)
     print(f'Created {config=} at {config_json}')
     return config_json
+
+def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
+    strg = game_dir / 'r6' / 'storages' / name
+    strg.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(storages, strg, dirs_exist_ok=True)
+
+
+if __name__ == '__main__':
+    install_mod_from_config_json(json_config=r'C:\prdev\mod\alberta\red.config.json')
