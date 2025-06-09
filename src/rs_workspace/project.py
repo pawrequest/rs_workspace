@@ -110,7 +110,8 @@ def make_config_json(config) -> Path:
 def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
     """Copy storages from the mod directory to the game directory"""
     if not storages.exists():
-        raise FileNotFoundError(f'Storages directory {storages} does not exist')
+        logger.info('Storages path does not exist, skipping copy')
+        return
     if not storages.is_dir():
         raise NotADirectoryError(f'Storages path {storages} is not a directory')
     strg = game_dir / 'r6' / 'storages' / name
