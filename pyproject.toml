@@ -1,6 +1,6 @@
 [project]
 name = "rs_workspace"
-version = "0.0.3"
+version = "0.0.4"
 
 dependencies = [
     'long-temporary @ D:/prdev/tools/long_temporary'
