@@ -3,6 +3,8 @@ import subprocess
 from os import mkdir
 from pathlib import Path
 
+from loguru import logger
+
 from rs_workspace.paths import (
     BUILD_DIR,
     COMPILER,
@@ -13,17 +15,18 @@ from rs_workspace.paths import (
 )
 import shutil
 
+
 def red_install(cwd: Path):
     """Run red install in the cwd"""
     subprocess.run('red install', cwd=str(cwd))
 
 
-def install_mod_from_config_json(json_config = None):
+def install_mod_from_config_json(json_config=None):
     json_config = json_config or 'red.config.json'
     print(f'Installing mod from {json_config}')
     json_path = Path(json_config).resolve()
     config = load_json(json_path)
-    src=json_path.parent / config['scripts']['redscript']['src']
+    src = json_path.parent / config['scripts']['redscript']['src']
     storages = src.parent / 'storages'
     copy_storages(storages=storages, name=config['name'], game_dir=Path(config['game']))
     red_install(json_path.parent)
@@ -103,8 +106,15 @@ def make_config_json(config) -> Path:
     print(f'Created {config=} at {config_json}')
     return config_json
 
+
 def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
+    """Copy storages from the mod directory to the game directory"""
+    if not storages.exists():
+        raise FileNotFoundError(f'Storages directory {storages} does not exist')
+    if not storages.is_dir():
+        raise NotADirectoryError(f'Storages path {storages} is not a directory')
     strg = game_dir / 'r6' / 'storages' / name
+    logger.info(f'Copying storages from {storages} to {strg}')
     strg.mkdir(parents=True, exist_ok=True)
     shutil.copytree(storages, strg, dirs_exist_ok=True)
 
