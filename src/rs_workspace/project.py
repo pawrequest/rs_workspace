@@ -115,6 +115,7 @@ def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
     if not storages.is_dir():
         raise NotADirectoryError(f'Storages path {storages} is not a directory')
     strg = game_dir / 'r6' / 'storages' / name
+    print(f'Copying storages from {storages} to {strg}')
     strg.mkdir(parents=True, exist_ok=True)
     shutil.copytree(storages, strg, dirs_exist_ok=True)
 
