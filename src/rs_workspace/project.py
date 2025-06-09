@@ -27,10 +27,10 @@ def install_mod_from_config_json(json_config=None):
     json_path = Path(json_config).resolve()
     config = load_json(json_path)
     src = json_path.parent / config['scripts']['redscript']['src']
-    storages = src.parent / 'storages'
-    copy_storages(storages=storages, name=config['name'], game_dir=Path(config['game']))
     red_install(json_path.parent)
     compile_to_game_dir()
+    storages = src.parent / 'storages'
+    copy_storages(storages=storages, name=config['name'], game_dir=Path(config['game']))
 
 
 def compile_to_game_dir(game_dir: Path = GAME_DIR):
@@ -115,7 +115,6 @@ def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
     if not storages.is_dir():
         raise NotADirectoryError(f'Storages path {storages} is not a directory')
     strg = game_dir / 'r6' / 'storages' / name
-    print(f'Copying storages from {storages} to {strg}')
     strg.mkdir(parents=True, exist_ok=True)
     shutil.copytree(storages, strg, dirs_exist_ok=True)
 
