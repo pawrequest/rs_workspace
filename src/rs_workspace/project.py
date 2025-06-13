@@ -1,36 +1,46 @@
 import json
+import os
 import subprocess
-from os import mkdir
 from pathlib import Path
-
-from loguru import logger
+import shutil
 
 from rs_workspace.paths import (
+    AUTOCONTINUE_REDS,
     BUILD_DIR,
     COMPILER,
     GAME_DIR,
+    LOG_REDS,
     R4EXT_PLUGINS,
     R4EXT_PLUGINS_REDSCRIPT_PATHS,
     R6_SCRIPTS,
 )
-import shutil
 
 
-def red_install(cwd: Path):
+def red_cli_install(cwd: Path):
     """Run red install in the cwd"""
     subprocess.run('red install', cwd=str(cwd))
 
 
-def install_mod_from_config_json(json_config=None):
-    json_config = json_config or 'red.config.json'
-    print(f'Installing mod from {json_config}')
-    json_path = Path(json_config).resolve()
-    config = load_json(json_path)
-    src = json_path.parent / config['scripts']['redscript']['src']
-    red_install(json_path.parent)
+def install_mod(red_config_json: Path):
+    print(f'Installing mod from {red_config_json}')
+    if not red_config_json.exists():
+        raise FileNotFoundError(f'Config file {red_config_json} does not exist')
+    if not red_config_json.is_file():
+        raise NotADirectoryError(f'Config path {red_config_json} is not a file')
+    config = load_json(red_config_json)
+    src = red_config_json.parent / config['scripts']['redscript']['src']
+    red_cli_install(red_config_json.parent)
     compile_to_game_dir()
     storages = src.parent / 'storages'
     copy_storages(storages=storages, name=config['name'], game_dir=Path(config['game']))
+
+
+def install_mod_from_config_path(config_dir: Path = None):
+    config_dir = config_dir or Path.cwd()
+    print(f'Install mod from config path {config_dir}')
+    red_config_json = config_dir / 'red.config.json'
+    print(f'Installing mod from {red_config_json}')
+    install_mod(red_config_json)
 
 
 def compile_to_game_dir(game_dir: Path = GAME_DIR):
@@ -120,5 +130,16 @@ def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
     shutil.copytree(storages, strg, dirs_exist_ok=True)
 
 
-if __name__ == '__main__':
-    install_mod_from_config_json(json_config=r'C:\prdev\mod\alberta\red.config.json')
+def rs_add_utils(autocontinue_reds: Path = AUTOCONTINUE_REDS, log_reds: Path = LOG_REDS):
+    r6 = GAME_DIR / R6_SCRIPTS
+    r6.mkdir(parents=True, exist_ok=True)
+    auto_dest = r6 / autocontinue_reds.name
+    log_dest = r6 / log_reds.name
+
+    shutil.copy(log_reds, log_dest)
+    shutil.copy(autocontinue_reds, auto_dest)
+
+
+def remove_utils(autocontinue_reds: Path = AUTOCONTINUE_REDS):
+    os.remove(GAME_DIR / R6_SCRIPTS / autocontinue_reds.name)
+    os.remove(GAME_DIR / R6_SCRIPTS / LOG_REDS.name)

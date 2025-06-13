@@ -32,25 +32,11 @@ def parseargs():
 
 
 def rs_init(config_json='red.config.json', dependencies_links=r'deps/'):
-    json_path = Path(config_json)
-    config = load_json(json_path)
-    name = config['name']
-    deps_dir = Path(dependencies_links).resolve()
-
-    install_deps_symlinks(deps_dir, exclude={name})
     make_redscript_path_txt(overwrite=True)
-
-
-def main():
-    # args = parseargs()
-    rs_init(
-        # game_dir=Path(args.game_dir),
-        # deps_dir=Path(args.deps_dir),
-        # overwrite=args.overwrite,
-    )
-
-
-if __name__ == '__main__':
-    main()
-
+    # red_config_json = Path(config_json)
+    # config = load_json(red_config_json)
+    # name = config['name']
+    # deps_dir = Path(dependencies_links).resolve()
+    #
+    # install_deps_symlinks(deps_dir, exclude={name})
 
