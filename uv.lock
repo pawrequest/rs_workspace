@@ -163,7 +163,7 @@ wheels = [
 
 [[package]]
 name = "rs-workspace"
-version = "0.0.6"
+version = "0.0.7"
 source = { editable = "." }
 dependencies = [
     { name = "long-temporary" },
