@@ -4,7 +4,8 @@ from pathlib import Path
 DIST = Path(__file__).parent.parent.parent / 'dist'
 
 GAME_DIR = Path(os.getenv('CYBERPUNK_GAME_DIR'))
-
+if not GAME_DIR:
+    raise ValueError()
 
 R4EXT = Path('red4ext')
 R4EXT_PLUGINS = R4EXT / 'plugins'

@@ -30,7 +30,7 @@ def rs_install(src_dir: Path = None):
 
 
 def rs_launch():
-    subprocess.run([GAME_EXE])
+    subprocess.Popen([GAME_EXE])
 
 
 def rs_install_launch(config_path: str = None):
