@@ -27,25 +27,33 @@ def install_mod(red_config_json: Path):
         raise FileNotFoundError(f'Config file {red_config_json} does not exist')
     if not red_config_json.is_file():
         raise NotADirectoryError(f'Config path {red_config_json} is not a file')
-    config = load_json(red_config_json)
-    src = red_config_json.parent / config['scripts']['redscript']['src']
     red_cli_install(red_config_json.parent)
     compile_to_game_dir()
-    storages = src.parent / 'storages'
-    copy_storages(storages=storages, name=config['name'], game_dir=Path(config['game']))
 
 
-def install_mod_from_config_path(config_dir: Path = None):
-    config_dir = config_dir or Path.cwd()
-    print(f'Install mod from config path {config_dir}')
-    red_config_json = config_dir / 'red.config.json'
-    print(f'Installing mod from {red_config_json}')
+def install_mod_from_config_path(config_path: Path = Path.cwd()):
+    if config_path.is_dir():
+        red_config_json = config_path / 'red.config.json'
+    elif config_path.is_file():
+        red_config_json = config_path
+    else:
+        raise ValueError(
+            f'Config path {config_path} is neither a file nor a directory. Please provide a valid path.'
+        )
     install_mod(red_config_json)
 
 
 def compile_to_game_dir(game_dir: Path = GAME_DIR):
     """Compile redscript files in the game_dir"""
     # cwd = cwd or get_pyproject_root()
+    if not game_dir.exists():
+        raise FileNotFoundError(f'Game directory {game_dir} does not exist')
+    if not game_dir.is_dir():
+        raise NotADirectoryError(f'Game path {game_dir} is not a directory')
+    if not (game_dir / 'bin' / 'x64' / 'Cyberpunk2077.exe').exists():
+        raise FileNotFoundError(
+            f'Game directory {game_dir} does not contain Cyberpunk2077.exe in bin/x64'
+        )
     scc = game_dir / COMPILER
     rs_scripts_dir = game_dir / R6_SCRIPTS
     r4ext_paths_file = game_dir / R4EXT_PLUGINS_REDSCRIPT_PATHS
@@ -57,7 +65,6 @@ def compile_to_game_dir(game_dir: Path = GAME_DIR):
         str(r4ext_paths_file),
     ]
     subprocess.run(args)
-    # subprocess.run(args, cwd=cwd)
 
 
 def make_redscript_path_txt(game_dir: Path = GAME_DIR, overwrite=False):
@@ -116,19 +123,6 @@ def make_config_json(config) -> Path:
         json.dump(config, f, indent=4)
     print(f'Created {config=} at {config_json}')
     return config_json
-
-
-def copy_storages(storages: Path, name: str, game_dir: Path = GAME_DIR):
-    """Copy storages from the mod directory to the game directory"""
-    if not storages.exists():
-        print('Storages path does not exist, skipping copy')
-        return
-    if not storages.is_dir():
-        raise NotADirectoryError(f'Storages path {storages} is not a directory')
-    strg = game_dir / 'r6' / 'storages' / name
-    print(f'Copying storages from {storages} to {strg}')
-    strg.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(storages, strg, dirs_exist_ok=True)
 
 
 def rs_add_utils(autocontinue_reds: Path = AUTOCONTINUE_REDS, log_reds: Path = LOG_REDS):

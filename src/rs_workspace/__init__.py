@@ -3,8 +3,13 @@ from pathlib import Path
 from pprint import pprint
 import argparse
 
-from rs_workspace.paths import  GAME_EXE
-from rs_workspace.project import install_mod_from_config_path, make_config, rs_add_utils, remove_utils
+from rs_workspace.paths import GAME_EXE
+from rs_workspace.project import (
+    install_mod_from_config_path,
+    make_config,
+    rs_add_utils,
+    remove_utils,
+)
 
 
 def parseargs():
@@ -13,27 +18,24 @@ def parseargs():
         '--src',
         nargs='?',
         default=Path.cwd(),
-        help='directory containing red.config.json',
+        help="red.config.json or it's parent directory",
+        type=Path,
     )
     return parser.parse_args()
 
 
-def rs_install(src_dir: Path = None):
+def rs_install(src_dir: Path = Path.cwd()):
     args = parseargs()
+    print(f'RedScriptWorkspace Installing from: {src_dir}')
     pprint(args)
-    src_dir = (
-        Path(args.src) if hasattr(args, 'src') else src_dir if src_dir.is_dir() else Path.cwd()
-    )
-    print(f'RedScriptWorkspace Installing from src_dir: {src_dir}')
-
-    install_mod_from_config_path(src_dir)
+    install_mod_from_config_path(args.src)
 
 
 def rs_launch():
     subprocess.Popen([GAME_EXE])
 
 
-def rs_install_launch(config_path: str = None):
+def rs_install_launch(config_path: Path = Path.cwd()):
     rs_install(config_path)
     rs_launch()
 

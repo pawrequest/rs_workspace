@@ -1,6 +1,6 @@
 [project]
 name = "rs_workspace"
-version = "0.0.9"
+version = "0.0.10"
 
 dependencies = [
     'long-temporary @ D:/prdev/tools/long_temporary'
@@ -14,9 +14,6 @@ dev = [
 ]
 
 [project.scripts]
-# rs_init = "rs_workspace:rs_init"
-# rs_init_install = "rs_workspace:rs_init_install"
-# rs_init_install_launch = "rs_workspace:rs_init_install_launch"
 rs_install = "rs_workspace:rs_install"
 rs_launch = "rs_workspace:rs_launch"
 rs_install_launch = "rs_workspace:rs_install_launch"
