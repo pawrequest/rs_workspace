@@ -100,6 +100,7 @@ def make_config(
             'redscript': {
                 'debounceTime': 3000,
                 'src': str(src),
+                'storages': str(src.parent / 'storages'),
                 'output': 'r6\\scripts\\',
             }
         },
